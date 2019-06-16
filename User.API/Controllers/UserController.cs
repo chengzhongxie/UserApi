@@ -80,11 +80,13 @@ namespace User.API.Controllers
         public async Task<IActionResult> CheckOrCreate(string phone)
         {
             //TBD 做手机号码的格式验证
-            if (!await _userContext.Users.AnyAsync(u => u.Phone == phone))
+            var user = _userContext.Users.SingleOrDefault(u => u.Phone == phone);
+            if (user != null)
             {
-                _userContext.Users.Add(new Models.AppUser { Phone = phone });
+                 user = new Models.AppUser { Phone = phone };
+                _userContext.Users.Add(user);
             }
-            return Ok();
+            return Ok(user.Id);
         }
     }
 }
