@@ -39,18 +39,14 @@ namespace User.Identity.Authentication
                 context.Result = errorValidationResult;
                 return;
             }
-
-            var userId =await _userService.CheckOrCreate(phone);
             // 用户注册
+            var userId = await _userService.CheckOrCreate(phone);
             if (string.IsNullOrWhiteSpace(userId))
             {
                 context.Result = errorValidationResult;
                 return;
             }
-            else
-            {
-                context.Result = new GrantValidationResult(userId, GrantType);
-            }
+            context.Result = new GrantValidationResult(userId, GrantType);
         }
     }
 }

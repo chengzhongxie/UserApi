@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace User.API
+namespace Gateway.API
 {
     public class Program
     {
@@ -19,6 +19,13 @@ namespace User.API
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                   .ConfigureAppConfiguration((hostingContext, builder) =>
+                     {
+                         builder
+                         .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
+                         .AddJsonFile("Ocelot.json");
+                     })
+                   .UseUrls("http://+:8080")
+                   .UseStartup<Startup>();
     }
 }

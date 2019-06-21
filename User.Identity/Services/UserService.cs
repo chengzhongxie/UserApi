@@ -9,7 +9,7 @@ namespace User.Identity.Services
     public class UserService : IUserService
     {
         private HttpClient _httpCliemt;
-        private readonly string _userServiceUrl = "http://localhost/";
+        private readonly string _userServiceUrl = "http://localhost:5000";
 
         public UserService(HttpClient httpCliemt)
         {

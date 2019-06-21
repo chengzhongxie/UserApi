@@ -28,7 +28,8 @@ namespace User.Identity
         {
             services.AddIdentityServer()
                 .AddExtensionGrantValidator<Authentication.SmsAuthCodeValidator>()
-                .AddDefaultSecretValidators()
+                //.AddDefaultSecretValidators()
+                .AddDeveloperSigningCredential()// 证书
                 .AddInMemoryClients(Config.GetClients())
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources());

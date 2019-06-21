@@ -77,16 +77,17 @@ namespace User.API.Controllers
         /// <returns></returns>
         [Route("check-or-create")]
         [HttpPost]
-        public async Task<IActionResult> CheckOrCreate(string phone)
+        public async Task<IActionResult> CheckOrCreate([FromForm] string phone)
         {
             //TBD 做手机号码的格式验证
             var user = _userContext.Users.SingleOrDefault(u => u.Phone == phone);
-            if (user != null)
+            if (user == null)
             {
-                 user = new Models.AppUser { Phone = phone };
+                user = new Models.AppUser { Phone = phone };
                 _userContext.Users.Add(user);
+                await _userContext.SaveChangesAsync();
             }
-            return Ok(user.Id);
+            return Ok(user.Id.ToString());
         }
     }
 }

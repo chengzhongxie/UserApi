@@ -9,7 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1625E81B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User.api.UnitTests", "User.api.UnitTests\User.api.UnitTests.csproj", "{2AB3520E-8960-4F05-ABF4-5CFD70B6CB3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Identity", "User.Identity\User.Identity.csproj", "{22E6AF40-72C6-4781-9547-7966228C20EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User.Identity", "User.Identity\User.Identity.csproj", "{22E6AF40-72C6-4781-9547-7966228C20EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gateway.API", "API.Gateway\Gateway.API.csproj", "{D5E1E045-264C-41BA-A234-509069725A38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{22E6AF40-72C6-4781-9547-7966228C20EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22E6AF40-72C6-4781-9547-7966228C20EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22E6AF40-72C6-4781-9547-7966228C20EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5E1E045-264C-41BA-A234-509069725A38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5E1E045-264C-41BA-A234-509069725A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5E1E045-264C-41BA-A234-509069725A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5E1E045-264C-41BA-A234-509069725A38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
