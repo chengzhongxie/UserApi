@@ -36,7 +36,18 @@ namespace User.API
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.Configure<Dtos.ServiceDisvoveryOptions>(Configuration.GetSection("ServiceDiscovery"));// json 配置文件映射到实体类
+            services.Configure<ServiceDisvoveryOptions>(Configuration.GetSection("ServiceDiscovery"));// json 配置文件映射到实体类
+
+            services.AddSingleton<IConsulClient>(p => new ConsulClient(cfg =>
+            {
+                var serviceConfiguration = p.GetRequiredService<IOptions<ServiceDisvoveryOptions>>().Value;
+
+                if (!string.IsNullOrEmpty(serviceConfiguration.Consul.HttpEndpoint))
+                {
+                    // if not configured, the client will use the default value "127.0.0.1:8500"
+                    cfg.Address = new Uri(serviceConfiguration.Consul.HttpEndpoint);
+                }
+            }));
 
             services.AddMvc(option =>
             {
@@ -68,6 +79,12 @@ namespace User.API
             UserContextSeed.SeedAsync(app, loggerFactory).Wait();
         }
 
+        /// <summary>
+        /// 启动时注册服务
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="serviceOptions"></param>
+        /// <param name="consul"></param>
         private void RegisterService(IApplicationBuilder app, IOptions<ServiceDisvoveryOptions> serviceOptions, IConsulClient consul)
         {
             var features = app.Properties["server.Features"] as FeatureCollection;
@@ -103,6 +120,13 @@ namespace User.API
                 //});
             }
         }
+
+        /// <summary>
+        /// 停止的时候移除服务
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="serviceOptions"></param>
+        /// <param name="consul"></param>
         private void DeRegisterService(IApplicationBuilder app, IOptions<ServiceDisvoveryOptions> serviceOptions, IConsulClient consul)
         {
             var features = app.Properties["server.Features"] as FeatureCollection;
@@ -113,29 +137,7 @@ namespace User.API
             foreach (var address in addresses)
             {
                 var serviceId = $"{serviceOptions.Value.ServiceName}_{address.Host}:{address.Port}";
-
-                var httpCheck = new AgentServiceCheck()
-                {
-                    DeregisterCriticalServiceAfter = TimeSpan.FromMinutes(1),
-                    Interval = TimeSpan.FromSeconds(30),
-                    HTTP = new Uri(address, "HealthCheck").OriginalString
-                };
-
-                var registration = new AgentServiceRegistration()
-                {
-                    Checks = new[] { httpCheck },
-                    Address = address.Host,
-                    ID = serviceId,
-                    Name = serviceOptions.Value.ServiceName,
-                    Port = address.Port
-                };
-
-                consul.Agent.ServiceRegister(registration).GetAwaiter().GetResult();
-
-                //appLife.ApplicationStopping.Register(() =>
-                //{
-                //    consul.Agent.ServiceDeregister(serviceId).GetAwaiter().GetResult();
-                //});
+                consul.Agent.ServiceDeregister(serviceId).GetAwaiter().GetResult();               
             }
         }
     }
