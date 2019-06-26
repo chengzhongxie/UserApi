@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User.Identity", "User.Ident
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gateway.API", "API.Gateway\Gateway.API.csproj", "{D5E1E045-264C-41BA-A234-509069725A38}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{76967DEC-62C6-466D-8AC7-B99B6C338914}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resilience", "..\Resilience\Resilience.csproj", "{6CFA5EA5-9925-48AA-806E-AEEC19C7D95B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,12 +39,17 @@ Global
 		{D5E1E045-264C-41BA-A234-509069725A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5E1E045-264C-41BA-A234-509069725A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5E1E045-264C-41BA-A234-509069725A38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CFA5EA5-9925-48AA-806E-AEEC19C7D95B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CFA5EA5-9925-48AA-806E-AEEC19C7D95B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CFA5EA5-9925-48AA-806E-AEEC19C7D95B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CFA5EA5-9925-48AA-806E-AEEC19C7D95B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2AB3520E-8960-4F05-ABF4-5CFD70B6CB3E} = {1625E81B-88EA-4779-8C7C-D735A29349B3}
+		{6CFA5EA5-9925-48AA-806E-AEEC19C7D95B} = {76967DEC-62C6-466D-8AC7-B99B6C338914}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {80116264-C42A-4A40-ACCA-351C0B452D84}
