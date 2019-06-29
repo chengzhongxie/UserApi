@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Resilience;
-using Resilience.RequestProvider;
 
 namespace User.Identity.Infrastructure
 {
     public class ResilienceClientFactory
     {
-        private ILogger<ResilienceClientFactory> _logger;
+        private ILogger<ResilienceHttpClient> _logger;
         private IHttpContextAccessor _httpContextAccessor;
         /// <summary>
         /// 重试次数
@@ -24,9 +20,9 @@ namespace User.Identity.Infrastructure
         /// </summary>
         private int _exceptionCountAllowedBeforeBreaking;
 
-   
+        public ResilienceHttpClient GetResilienceHttpClient() => new ResilienceHttpClient((origin)=>CreatePolicy(origin), _logger, _httpContextAccessor);
 
-        public ResilienceClientFactory(ILogger<ResilienceClientFactory> logger, IHttpContextAccessor httpContextAccessor, int retryCount, int exceptionCountAllowedBeforeBreaking)
+        public ResilienceClientFactory(ILogger<ResilienceHttpClient> logger, IHttpContextAccessor httpContextAccessor, int retryCount, int exceptionCountAllowedBeforeBreaking)
         {
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;

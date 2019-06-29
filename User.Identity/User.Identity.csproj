@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Resilience\Resilience.csproj" />
+    <ProjectReference Include="..\Resilience\Resilience.csproj" />
   </ItemGroup>
 
 </Project>
