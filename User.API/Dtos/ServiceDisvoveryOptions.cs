@@ -7,6 +7,7 @@ namespace User.API.Dtos
 {
     public class ServiceDisvoveryOptions
     {
+        public bool Enable { get; set; }
         public string ServiceName { get; set; }
 
         public ConsulOptions Consul { get; set; }

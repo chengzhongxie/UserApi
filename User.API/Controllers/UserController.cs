@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using User.API.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.JsonPatch;
+using System.Collections;
 
 namespace User.API.Controllers
 {
@@ -88,6 +89,49 @@ namespace User.API.Controllers
                 await _userContext.SaveChangesAsync();
             }
             return Ok(user.Id.ToString());
+        }
+
+        /// <summary>
+        /// 获取用户标签选项数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("tags")]
+        public async Task<IActionResult> GetUserTage()
+        {
+            return Ok(await _userContext.UserTags.Where(m => m.UserId.ToString() == UserIdentity.UserId).ToListAsync());
+        }
+
+        /// <summary>
+        /// 根据手机号码查找资料
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("search")]
+        public async Task<IActionResult> Search(string phone)
+        {
+            return Ok(await _userContext.Users.Include(u => u.Properties).SingleOrDefaultAsync(u => u.Id.ToString() == UserIdentity.UserId));
+        }
+        /// <summary>
+        /// 更新用户标签数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("tags")]
+        public async Task<IActionResult> UpdateUserTage([FromBody]List<string> tages
+            )
+        {
+            var originTags = await _userContext.UserTags.Where(u => u.UserId.ToString() == UserIdentity.UserId).ToListAsync();
+            var newTags = tages.Except(originTags.Select(u => u.Tag));
+            await _userContext.UserTags.AddRangeAsync(newTags.Select(t => new Models.UserTag
+            {
+                CreateTime = DateTime.Now,
+                UserId = Guid.Parse(UserIdentity.UserId),
+                Tag = t
+            }));
+            await _userContext.SaveChangesAsync();
+            return Ok();
         }
     }
 }

@@ -62,19 +62,19 @@ namespace User.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            // 启动时注册服务
-            application.ApplicationStarted.Register(() =>
+            if (serviceOptions.Value.Enable)// 是否启用Consul
             {
-                RegisterService(app, serviceOptions, consul);
-            });
-
-            // 停止的时候移除服务
-            application.ApplicationStopped.Register(() =>
-            {
-                DeRegisterService(app, serviceOptions, consul);
-            });
-
+                // 启动时注册服务
+                application.ApplicationStarted.Register(() =>
+                {
+                    RegisterService(app, serviceOptions, consul);
+                });
+                // 停止的时候移除服务
+                application.ApplicationStopped.Register(() =>
+                {
+                    DeRegisterService(app, serviceOptions, consul);
+                });
+            }
             app.UseMvc();
             UserContextSeed.SeedAsync(app, loggerFactory).Wait();
         }
@@ -137,7 +137,7 @@ namespace User.API
             foreach (var address in addresses)
             {
                 var serviceId = $"{serviceOptions.Value.ServiceName}_{address.Host}:{address.Port}";
-                consul.Agent.ServiceDeregister(serviceId).GetAwaiter().GetResult();               
+                consul.Agent.ServiceDeregister(serviceId).GetAwaiter().GetResult();
             }
         }
     }

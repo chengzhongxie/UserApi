@@ -20,7 +20,7 @@ namespace User.Identity.Infrastructure
         /// </summary>
         private int _exceptionCountAllowedBeforeBreaking;
 
-        public ResilienceHttpClient GetResilienceHttpClient() => new ResilienceHttpClient((origin)=>CreatePolicy(origin), _logger, _httpContextAccessor);
+        public ResilienceHttpClient GetResilienceHttpClient() => new ResilienceHttpClient((origin) => CreatePolicy(origin), _logger, _httpContextAccessor);
 
         public ResilienceClientFactory(ILogger<ResilienceHttpClient> logger, IHttpContextAccessor httpContextAccessor, int retryCount, int exceptionCountAllowedBeforeBreaking)
         {
