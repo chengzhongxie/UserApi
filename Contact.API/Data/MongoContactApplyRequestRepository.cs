@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Contact.API.Models;
+using MongoDB.Driver;
 
 namespace Contact.API.Data
 {
@@ -25,9 +27,9 @@ namespace Contact.API.Data
             throw new NotImplementedException();
         }
 
-        public Task<bool> GetRequestListAsync(string userId)
+        public async Task<List<ContactApplyRequest>> GetRequestListAsync(string userId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return (await _contactContext.ContactApplyRequests.FindAsync(r => r.UserId.ToString() == userId)).ToList(cancellationToken);
         }
     }
 }
