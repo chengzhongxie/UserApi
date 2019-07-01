@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Contact.API.Models;
 
@@ -13,18 +14,18 @@ namespace Contact.API.Data
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<bool> AddRequstAsync(ContactApplyRequest request);
+        Task<bool> AddRequstAsync(ContactApplyRequest request, CancellationToken cancellationToken);
         /// <summary>
         /// 通过好友请求
         /// </summary>
         /// <param name="applierId"></param>
         /// <returns></returns>
-        Task<bool> ApprovalAsync(string applierId);
+        Task<bool> ApprovalAsync(string applierId, CancellationToken cancellationToken);
         /// <summary>
         /// 获取好友申请列表
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<bool> GetRequestListAsync(string userId);
+        Task<List<ContactApplyRequest>> GetRequestListAsync(string userId, CancellationToken cancellationToken);
     }
 }
