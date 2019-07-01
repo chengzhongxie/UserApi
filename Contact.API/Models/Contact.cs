@@ -7,6 +7,10 @@ namespace Contact.API.Models
 {
     public class Contact
     {
+        public Contact()
+        {
+            Tags = new List<string>();
+        }
         public Guid UserId { get; set; }
         /// <summary>
         /// 用户名称
@@ -24,5 +28,9 @@ namespace Contact.API.Models
         /// 头像地址
         /// </summary>
         public string Avatar { get; set; }
+        /// <summary>
+        /// 用户标签
+        /// </summary>
+        public List<string> Tags { get; set; }
     }
 }

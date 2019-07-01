@@ -7,6 +7,11 @@ namespace Contact.API.Models
 {
     public class ContactBook
     {
+        public ContactBook()
+        {
+            Contacts = new List<Contact>();
+        }
+
         public Guid UserId { get; set; }
         /// <summary>
         /// 联系人列表

@@ -10,7 +10,7 @@ namespace Contact.API.Dtos
         /// <summary>
         /// 用户id
         /// </summary>
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         /// <summary>
         /// 名称
         /// </summary>

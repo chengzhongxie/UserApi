@@ -42,6 +42,6 @@ namespace Contact.API.Models
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime CreateTime { get; set; }
+        public DateTime ApplyTime { get; set; }
     }
 }

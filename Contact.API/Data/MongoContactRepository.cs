@@ -17,9 +17,29 @@ namespace Contact.API.Data
         {
             _contactContext = contactContext;
         }
-        public async Task<bool> UpdateContactInfo(BaseUserInfo userInfo, CancellationToken cancellationToken)
+
+        public async Task<bool> AddContactAsync(string userId, BaseUserInfo baseUserInfo, CancellationToken cancellationToken)
         {
-            var contactBook = (await _contactContext.ContactBooks.FindAsync(c => c.UserId.ToString() == userInfo.UserId, null, cancellationToken)).FirstOrDefault(cancellationToken);
+            if (_contactContext.ContactBooks.CountDocuments(c => c.UserId.ToString() == userId) > 0)
+            {
+                await _contactContext.ContactBooks.InsertOneAsync(new ContactBook { UserId = Guid.Parse(userId) });
+            }
+            var filter = Builders<ContactBook>.Filter.Eq(c => c.UserId.ToString(), userId);
+            var update = Builders<ContactBook>.Update.AddToSet(c => c.Contacts, new Models.Contact
+            {
+                UserId = baseUserInfo.UserId,
+                Avatar = baseUserInfo.Avatar,
+                Company = baseUserInfo.Company,
+                Name = baseUserInfo.Name,
+                Title = baseUserInfo.Title
+            });
+            var result = await _contactContext.ContactBooks.UpdateOneAsync(filter, update, null, cancellationToken);
+            return result.MatchedCount == result.ModifiedCount && result.ModifiedCount == 1;
+        }
+
+        public async Task<bool> UpdateContactInfoAsync(BaseUserInfo userInfo, CancellationToken cancellationToken)
+        {
+            var contactBook = (await _contactContext.ContactBooks.FindAsync(c => c.UserId == userInfo.UserId, null, cancellationToken)).FirstOrDefault(cancellationToken);
             if (contactBook == null)
             {
                 return true;
@@ -30,7 +50,7 @@ namespace Contact.API.Data
             // 查询需要修改的数据
             var filter = Builders<ContactBook>.Filter.And(
                 Builders<ContactBook>.Filter.In(m => m.UserId, contactIds),
-                Builders<ContactBook>.Filter.ElemMatch(m => m.Contacts, contacts => contacts.UserId.ToString() == userInfo.UserId)
+                Builders<ContactBook>.Filter.ElemMatch(m => m.Contacts, contacts => contacts.UserId == userInfo.UserId)
                 );
 
             // 设置需要修改的数据
@@ -42,7 +62,7 @@ namespace Contact.API.Data
             // 修改数据
             var updateResult = _contactContext.ContactBooks.UpdateMany(filter, update);// _contactContext.ContactBooks.UpdateOne() 修改全部数据
 
-            return updateResult.MatchedCount == updateResult.MatchedCount;
+            return updateResult.MatchedCount == updateResult.ModifiedCount;
 
         }
     }

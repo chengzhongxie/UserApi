@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Contact.API.Data;
 using Contact.API.Models;
 using Contact.API.Services;
+using System.Threading;
 
 namespace Contact.API.Controllers
 {
@@ -14,12 +15,14 @@ namespace Contact.API.Controllers
     public class ContactController : BaseController
     {
         private readonly IContactApplyRequestRepository _contactApplyRequestRepository;
+        private readonly IContactRepository _contactRepository;
         private readonly IUserService _userService;
 
-        public ContactController(IContactApplyRequestRepository contactApplyRequestRepository, IUserService userService)
+        public ContactController(IContactApplyRequestRepository contactApplyRequestRepository, IUserService userService, IContactRepository contactRepository)
         {
             _contactApplyRequestRepository = contactApplyRequestRepository;
             _userService = userService;
+            _contactRepository = contactRepository;
         }
 
         /// <summary>
@@ -28,9 +31,9 @@ namespace Contact.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("apply-requests")]
-        public async Task<IActionResult> GetApplyReqeusts()
+        public async Task<IActionResult> GetApplyReqeusts(CancellationToken cancellationToken)
         {
-            var requests = await _contactApplyRequestRepository.GetRequestListAsync(UserIdentity.UserId);
+            var requests = await _contactApplyRequestRepository.GetRequestListAsync(UserIdentity.UserId, cancellationToken);
             return Ok(requests);
         }
         /// <summary>
@@ -39,7 +42,7 @@ namespace Contact.API.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("apply-requests")]
-        public async Task<IActionResult> AddApplyReqeusts(string userId)
+        public async Task<IActionResult> AddApplyReqeusts(string userId, CancellationToken cancellationToken)
         {
             var userBaseInfo = await _userService.GetBaseUserInfoAsync(userId);
             if (userBaseInfo == null)
@@ -53,9 +56,9 @@ namespace Contact.API.Controllers
                 Name = userBaseInfo.Name,
                 Company = userBaseInfo.Company,
                 Title = userBaseInfo.Title,
-                CreateTime = DateTime.Now,
+                ApplyTime = DateTime.Now,
                 Avatar = userBaseInfo.Avatar
-            });
+            }, cancellationToken);
             if (!result)
             {
                 return BadRequest();
@@ -68,14 +71,19 @@ namespace Contact.API.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("apply-requests")]
-        public async Task<IActionResult> ApprovalApplyReqeust(string applierId)
+        public async Task<IActionResult> ApprovalApplyReqeust(string applierId, CancellationToken cancellationToken)
         {
-            var result = await _contactApplyRequestRepository.ApprovalAsync(applierId);
+            var result = await _contactApplyRequestRepository.ApprovalAsync(UserIdentity.UserId, applierId, cancellationToken);
             if (!result)
             {
                 return BadRequest();
             }
+            var applier = await _userService.GetBaseUserInfoAsync(applierId);
+            var userinfo=await _userService.GetBaseUserInfoAsync(UserIdentity.UserId);
+            await _contactRepository.AddContactAsync(UserIdentity.UserId, userinfo, cancellationToken);
+            await _contactRepository.AddContactAsync(applierId, applier, cancellationToken);
             return Ok();
+
         }
     }
 }
