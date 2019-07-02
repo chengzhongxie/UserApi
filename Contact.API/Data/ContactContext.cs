@@ -11,7 +11,7 @@ namespace Contact.API.Data
     public class ContactContext
     {
         private IMongoDatabase _database;
-        private IMongoCollection<ContactBook> _collection;
+        private readonly IMongoCollection<ContactBook> _collection;
         private AppSettings _appSettings;
 
         public ContactContext(IOptionsSnapshot<AppSettings> snapshot)
