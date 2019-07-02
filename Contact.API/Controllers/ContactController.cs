@@ -7,10 +7,12 @@ using Contact.API.Data;
 using Contact.API.Models;
 using Contact.API.Services;
 using System.Threading;
+using MongoDB.Driver;
+using Contact.API.ViewModels;
 
 namespace Contact.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/contacts")]
     [ApiController]
     public class ContactController : BaseController
     {
@@ -26,6 +28,37 @@ namespace Contact.API.Controllers
         }
 
         /// <summary>
+        /// 获取联系人列表
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("apply-get")]
+        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        {
+            var requests = await _contactRepository.GetContactsAsync(UserIdentity.UserId, cancellationToken);
+            return Ok(requests);
+        }
+
+        /// <summary>
+        /// 更新好友标签
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("apply-tag")]
+        public async Task<IActionResult> TagContact([FromBody]TagContactInputViewModel tag, CancellationToken cancellationToken)
+        {
+            var requests = await _contactRepository.TagContactAsync(UserIdentity.UserId, tag.ContactId, tag.Tags, cancellationToken);
+            if (requests)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        /// <summary>
         /// 获取好友申请列表
         /// </summary>
         /// <returns></returns>
@@ -36,6 +69,7 @@ namespace Contact.API.Controllers
             var requests = await _contactApplyRequestRepository.GetRequestListAsync(UserIdentity.UserId, cancellationToken);
             return Ok(requests);
         }
+
         /// <summary>
         /// 添加好友申请
         /// </summary>
@@ -65,6 +99,7 @@ namespace Contact.API.Controllers
             }
             return Ok();
         }
+
         /// <summary>
         /// 通过好友请求
         /// </summary>
@@ -79,7 +114,7 @@ namespace Contact.API.Controllers
                 return BadRequest();
             }
             var applier = await _userService.GetBaseUserInfoAsync(applierId);
-            var userinfo=await _userService.GetBaseUserInfoAsync(UserIdentity.UserId);
+            var userinfo = await _userService.GetBaseUserInfoAsync(UserIdentity.UserId);
             await _contactRepository.AddContactAsync(UserIdentity.UserId, userinfo, cancellationToken);
             await _contactRepository.AddContactAsync(applierId, applier, cancellationToken);
             return Ok();

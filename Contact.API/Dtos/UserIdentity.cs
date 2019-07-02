@@ -11,5 +11,7 @@ namespace Contact.API.Dtos
         /// 用户id
         /// </summary>
         public string UserId { get; set; }
+
+        public string Name { get; set; }
     }
 }
