@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IdentityServer4.Validation;
 using IdentityServer4.Models;
 using User.Identity.Services;
+using System.Security.Claims;
 
 namespace User.Identity.Authentication
 {
@@ -40,12 +41,16 @@ namespace User.Identity.Authentication
                 return;
             }
             // 用户注册
-            var userId = await _userService.CheckOrCreate(phone);
-            if (string.IsNullOrWhiteSpace(userId))
+            var userInfo = await _userService.CheckOrCreate(phone);
+            if (userInfo == null)
             {
                 context.Result = errorValidationResult;
                 return;
             }
+            var claims = new Claim[]
+            {
+                new Claim("")
+            };
             context.Result = new GrantValidationResult(userId, GrantType);
         }
     }

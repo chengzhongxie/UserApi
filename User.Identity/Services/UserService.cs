@@ -7,13 +7,15 @@ using DnsClient;
 using Microsoft.Extensions.Options;
 using Resilience;
 using Microsoft.Extensions.Logging;
+using User.Identity.Dtos;
+using Newtonsoft.Json;
 
 namespace User.Identity.Services
 {
     public class UserService : IUserService
     {
         private IHttpClient _httpCliemt;
-        private string _userServiceUrl="http://localhost:5002";
+        private string _userServiceUrl = "http://localhost:5002";
         private readonly ILogger<UserService> _logger;
 
         public UserService(IHttpClient httpCliemt, IOptions<Dtos.ServiceDisvoveryOptions> options, IDnsQuery dnsQuery, ILogger<UserService> logger)
@@ -30,7 +32,7 @@ namespace User.Identity.Services
             }
         }
 
-        public async Task<string> CheckOrCreate(string phone)
+        public async Task<UserInfo> CheckOrCreate(string phone)
         {
             var form = new Dictionary<string, string> { { "phone", phone } };
             //var content = new FormUrlEncodedContent(form);
@@ -39,9 +41,9 @@ namespace User.Identity.Services
                 var response = await _httpCliemt.PostAsync(_userServiceUrl + "/api/user/check-or-create", form);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    var urerid = await response.Content.ReadAsStringAsync();
-                    Guid.TryParse(urerid, out Guid intUserId);
-                    return intUserId.ToString();
+                    var result = await response.Content.ReadAsStringAsync();
+                    var userInfo = JsonConvert.DeserializeObject<UserInfo>(result);
+                    return userInfo;
 
                 }
             }
@@ -50,7 +52,7 @@ namespace User.Identity.Services
                 _logger.LogError("CheckOrCreate 在重试后失败," + ex.Message + "," + ex.StackTrace);
                 throw ex;
             }
-            return "";
+            return null;
         }
     }
 }

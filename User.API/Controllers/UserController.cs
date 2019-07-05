@@ -88,7 +88,13 @@ namespace User.API.Controllers
                 _userContext.Users.Add(user);
                 await _userContext.SaveChangesAsync();
             }
-            return Ok(user.Id.ToString());
+            return Ok(new {
+                user.Id,
+                user.Name,
+                user.Company,
+                user.Title,
+                user.Avatar
+            });
         }
 
         /// <summary>
