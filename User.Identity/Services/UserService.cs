@@ -15,7 +15,7 @@ namespace User.Identity.Services
     public class UserService : IUserService
     {
         private IHttpClient _httpCliemt;
-        private string _userServiceUrl = "http://localhost:5002";
+        private string _userServiceUrl;
         private readonly ILogger<UserService> _logger;
 
         public UserService(IHttpClient httpCliemt, IOptions<Dtos.ServiceDisvoveryOptions> options, IDnsQuery dnsQuery, ILogger<UserService> logger)

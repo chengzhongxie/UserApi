@@ -115,8 +115,8 @@ namespace Contact.API.Controllers
             }
             var applier = await _userService.GetBaseUserInfoAsync(applierId);
             var userinfo = await _userService.GetBaseUserInfoAsync(UserIdentity.UserId);
-            await _contactRepository.AddContactAsync(UserIdentity.UserId, userinfo, cancellationToken);
-            await _contactRepository.AddContactAsync(applierId, applier, cancellationToken);
+            await _contactRepository.AddContactAsync(UserIdentity.UserId, applier, cancellationToken);
+            await _contactRepository.AddContactAsync(applierId, userinfo, cancellationToken);
             return Ok();
 
         }

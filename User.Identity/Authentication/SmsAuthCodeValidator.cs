@@ -49,9 +49,12 @@ namespace User.Identity.Authentication
             }
             var claims = new Claim[]
             {
-                new Claim("")
+                new Claim("naem",userInfo.Name??string.Empty),
+                new Claim("tiatle",userInfo.Tiatle??string.Empty),
+                new Claim("avatar",userInfo.Avatar??string.Empty),
+                new Claim("company",userInfo.Company??string.Empty)
             };
-            context.Result = new GrantValidationResult(userId, GrantType);
+            context.Result = new GrantValidationResult(userInfo.Id, GrantType, claims);
         }
     }
 }

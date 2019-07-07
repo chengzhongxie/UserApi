@@ -17,6 +17,8 @@ using Resilience;
 using User.Identity.Dtos;
 using User.Identity.Infrastructure;
 using User.Identity.Services;
+using IdentityServer4.Services;
+using User.Identity.Authentication;
 
 namespace User.Identity
 {
@@ -63,6 +65,8 @@ namespace User.Identity
             {
                 return sp.GetRequiredService<ResilienceClientFactory>().GetResilienceHttpClient();
             });
+
+            services.AddTransient<IProfileService, ProfileService>();// 处理自定义Claim添加
 
             services.AddScoped<IAuthCodeService, TestAuthCodeService>().AddScoped<IUserService, UserService>();
 
