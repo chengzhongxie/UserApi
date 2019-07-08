@@ -50,7 +50,7 @@ namespace User.Identity.Authentication
             var claims = new Claim[]
             {
                 new Claim("naem",userInfo.Name??string.Empty),
-                new Claim("tiatle",userInfo.Tiatle??string.Empty),
+                new Claim("title",userInfo.Title??string.Empty),
                 new Claim("avatar",userInfo.Avatar??string.Empty),
                 new Claim("company",userInfo.Company??string.Empty)
             };

@@ -46,6 +46,39 @@ namespace Resilience
             Func<HttpRequestMessage> requestMessage = () => CreateHttpRequestMessage(HttpMethod.Post, url, form);
             return await DoPostPutAsync(HttpMethod.Post, url, requestMessage, authorizationToken, requestId, authorizatinonMethod);
         }
+
+        public async Task<HttpResponseMessage> PutAsync<T>(string url, T item, string authorizationToken = null, string requestId = null, string authorizatinonMethod = "Bearer")
+        {
+            Func<HttpRequestMessage> requestMessage = () => CreateHttpRequestMessage(HttpMethod.Put, url, item);
+            return await DoPostPutAsync(HttpMethod.Put, url, requestMessage, authorizationToken, requestId, authorizatinonMethod);
+        }
+
+        public Task<string> GetStringAsync(string url, string authorizationToken = null, string authorizatinonMethod = "Bearer")
+        {
+            var origin = GetOriginFromUri(url);
+
+            return HttpInvoker(origin, async () =>
+            {
+                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+                SetAuthorizationHeader(requestMessage);
+                if (authorizationToken != null)
+                {
+                    requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(authorizatinonMethod, authorizationToken);
+                }
+
+                var response = await _httpClient.SendAsync(requestMessage);
+                if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    throw new HttpRequestException();
+                }
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+                return await response.Content.ReadAsStringAsync();
+            });
+        }
+
         private Task<HttpResponseMessage> DoPostPutAsync(HttpMethod method, string url, Func<HttpRequestMessage> requestMessageFunc, string authorizationToken = null, string requestId = null, string authorizatinonMethod = "Bearer")
         {
             if (method != HttpMethod.Post && method != HttpMethod.Put)

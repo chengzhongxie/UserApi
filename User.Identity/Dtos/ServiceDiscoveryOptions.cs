@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace User.Identity.Dtos
 {
-    public class ServiceDisvoveryOptions
+    public class ServiceDiscoveryOptions
     {
         public string UserServiceName { get; set; }
 

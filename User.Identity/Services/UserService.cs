@@ -18,7 +18,7 @@ namespace User.Identity.Services
         private string _userServiceUrl;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IHttpClient httpCliemt, IOptions<Dtos.ServiceDisvoveryOptions> options, IDnsQuery dnsQuery, ILogger<UserService> logger)
+        public UserService(IHttpClient httpCliemt, IOptions<Dtos.ServiceDiscoveryOptions> options, IDnsQuery dnsQuery, ILogger<UserService> logger)
         {
             _httpCliemt = httpCliemt;
             _logger = logger;

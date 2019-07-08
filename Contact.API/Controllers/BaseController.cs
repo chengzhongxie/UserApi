@@ -14,10 +14,10 @@ namespace Contact.API.Controllers
             get
             {
                 var identity = new UserIdentity();
-                identity.UserId = User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+                identity.UserId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == "sub").Value);
                 identity.Name = User.Claims.FirstOrDefault(c => c.Type == "name").Value;
                 identity.Company = User.Claims.FirstOrDefault(c => c.Type == "company").Value;
-                identity.Tiatle = User.Claims.FirstOrDefault(c => c.Type == "tiatle").Value;
+                identity.Title = User.Claims.FirstOrDefault(c => c.Type == "title").Value;
                 identity.Avatar = User.Claims.FirstOrDefault(c => c.Type == "avatar").Value;
                 return identity;
             }

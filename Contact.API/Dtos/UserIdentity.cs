@@ -10,11 +10,22 @@ namespace Contact.API.Dtos
         /// <summary>
         /// 用户id
         /// </summary>
-        public string UserId { get; set; }
-
+        public Guid UserId { get; set; }
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 公司
+        /// </summary>
         public string Company { get; set; }
-        public string Tiatle { get; set; }
+        /// <summary>
+        /// 职位
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 头像
+        /// </summary>
         public string Avatar { get; set; }
     }
 }

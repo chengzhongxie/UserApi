@@ -42,10 +42,10 @@ namespace User.Identity
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources());
 
-            services.Configure<ServiceDisvoveryOptions>(Configuration.GetSection("ServiceDiscovery"));// json 配置文件映射到实体类
+            services.Configure<ServiceDiscoveryOptions>(Configuration.GetSection("ServiceDiscovery"));// json 配置文件映射到实体类
             services.AddSingleton<IDnsQuery>(p =>
             {
-                var serviceConfiguration = p.GetRequiredService<IOptions<ServiceDisvoveryOptions>>().Value;
+                var serviceConfiguration = p.GetRequiredService<IOptions<ServiceDiscoveryOptions>>().Value;
                 return new LookupClient(serviceConfiguration.Consul.DnsEndpoint.ToIPEndPoint());
             });
 

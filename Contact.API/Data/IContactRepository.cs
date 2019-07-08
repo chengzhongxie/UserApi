@@ -14,7 +14,7 @@ namespace Contact.API.Data
         /// </summary>
         /// <param name="userInfo"></param>
         /// <returns></returns>
-        Task<bool> UpdateContactInfoAsync(BaseUserInfo userInfo, CancellationToken cancellationToken);
+        Task<bool> UpdateContactInfoAsync(UserIdentity userInfo, CancellationToken cancellationToken);
 
         /// <summary>
         /// 添加联系人信息
@@ -22,7 +22,7 @@ namespace Contact.API.Data
         /// <param name="baseUserInfo"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> AddContactAsync(string userId, BaseUserInfo baseUserInfo, CancellationToken cancellationToken);
+        Task<bool> AddContactAsync(string userId, UserIdentity baseUserInfo, CancellationToken cancellationToken);
 
         /// <summary>
         /// 获取联系人列表

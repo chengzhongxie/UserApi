@@ -18,7 +18,7 @@ namespace Contact.API.Data
             _contactContext = contactContext;
         }
 
-        public async Task<bool> AddContactAsync(string userId, BaseUserInfo baseUserInfo, CancellationToken cancellationToken)
+        public async Task<bool> AddContactAsync(string userId, UserIdentity baseUserInfo, CancellationToken cancellationToken)
         {
             if (_contactContext.ContactBooks.CountDocuments(c => c.UserId.ToString() == userId) > 0)
             {
@@ -61,7 +61,7 @@ namespace Contact.API.Data
             return result.MatchedCount == result.ModifiedCount && result.ModifiedCount == 1;
         }
 
-        public async Task<bool> UpdateContactInfoAsync(BaseUserInfo userInfo, CancellationToken cancellationToken)
+        public async Task<bool> UpdateContactInfoAsync(UserIdentity userInfo, CancellationToken cancellationToken)
         {
             var contactBook = (await _contactContext.ContactBooks.FindAsync(c => c.UserId == userInfo.UserId, null, cancellationToken)).FirstOrDefault(cancellationToken);
             if (contactBook == null)

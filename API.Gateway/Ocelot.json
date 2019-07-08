@@ -17,6 +17,38 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/api/user/tags",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5000
+        }
+      ],
+      "UpstreamPathTemplate": "/user/tags",
+      "UpstreamHttpMethod": [ "Get", "Put" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "finbook",
+        "AllowedScopes": [ "user_api" ]
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/baseinfo/{userId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5000
+        }
+      ],
+      "UpstreamPathTemplate": "/user/baseinfo/{userId}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "finbook",
+        "AllowedScopes": [ "user_api" ]
+      }
+    },
+    {
       "DownstreamPathTemplate": "/connect/{catchAll}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -54,7 +86,7 @@
       "UpstreamHttpMethod": [ "Get" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "finbook",
-        "AllowedScopes": ["contact_api"]
+        "AllowedScopes": [ "contact_api" ]
       }
     },
     {

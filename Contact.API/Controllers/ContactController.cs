@@ -36,7 +36,7 @@ namespace Contact.API.Controllers
         [Route("apply-get")]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            var requests = await _contactRepository.GetContactsAsync(UserIdentity.UserId, cancellationToken);
+            var requests = await _contactRepository.GetContactsAsync(UserIdentity.UserId.ToString(), cancellationToken);
             return Ok(requests);
         }
 
@@ -50,7 +50,7 @@ namespace Contact.API.Controllers
         [Route("apply-tag")]
         public async Task<IActionResult> TagContact([FromBody]TagContactInputViewModel tag, CancellationToken cancellationToken)
         {
-            var requests = await _contactRepository.TagContactAsync(UserIdentity.UserId, tag.ContactId, tag.Tags, cancellationToken);
+            var requests = await _contactRepository.TagContactAsync(UserIdentity.UserId.ToString(), tag.ContactId, tag.Tags, cancellationToken);
             if (requests)
             {
                 return Ok();
@@ -66,7 +66,7 @@ namespace Contact.API.Controllers
         [Route("apply-requests")]
         public async Task<IActionResult> GetApplyReqeusts(CancellationToken cancellationToken)
         {
-            var requests = await _contactApplyRequestRepository.GetRequestListAsync(UserIdentity.UserId, cancellationToken);
+            var requests = await _contactApplyRequestRepository.GetRequestListAsync(UserIdentity.UserId.ToString(), cancellationToken);
             return Ok(requests);
         }
 
@@ -75,7 +75,7 @@ namespace Contact.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("apply-requests")]
+        [Route("apply-requests/{userId}")]
         public async Task<IActionResult> AddApplyReqeusts(string userId, CancellationToken cancellationToken)
         {
             var userBaseInfo = await _userService.GetBaseUserInfoAsync(userId);
@@ -86,7 +86,7 @@ namespace Contact.API.Controllers
             var result = await _contactApplyRequestRepository.AddRequstAsync(new ContactApplyRequest
             {
                 UserId = Guid.Parse(userId),
-                ApplierId = Guid.Parse(UserIdentity.UserId),
+                ApplierId = UserIdentity.UserId,
                 Name = userBaseInfo.Name,
                 Company = userBaseInfo.Company,
                 Title = userBaseInfo.Title,
@@ -108,14 +108,14 @@ namespace Contact.API.Controllers
         [Route("apply-requests")]
         public async Task<IActionResult> ApprovalApplyReqeust(string applierId, CancellationToken cancellationToken)
         {
-            var result = await _contactApplyRequestRepository.ApprovalAsync(UserIdentity.UserId, applierId, cancellationToken);
+            var result = await _contactApplyRequestRepository.ApprovalAsync(UserIdentity.UserId.ToString(), applierId, cancellationToken);
             if (!result)
             {
                 return BadRequest();
             }
             var applier = await _userService.GetBaseUserInfoAsync(applierId);
-            var userinfo = await _userService.GetBaseUserInfoAsync(UserIdentity.UserId);
-            await _contactRepository.AddContactAsync(UserIdentity.UserId, applier, cancellationToken);
+            var userinfo = await _userService.GetBaseUserInfoAsync(UserIdentity.UserId.ToString());
+            await _contactRepository.AddContactAsync(UserIdentity.UserId.ToString(), applier, cancellationToken);
             await _contactRepository.AddContactAsync(applierId, userinfo, cancellationToken);
             return Ok();
 

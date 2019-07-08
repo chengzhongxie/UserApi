@@ -35,6 +35,7 @@ namespace User.Identity
                     {
                         "gateway_api",
                         "contact_api",
+                        "user_api",
                         IdentityServerConstants.StandardScopes.OfflineAccess,
                          IdentityServerConstants.StandardScopes.OpenId,
                           IdentityServerConstants.StandardScopes.Profile,
@@ -64,7 +65,8 @@ namespace User.Identity
             return new List<ApiResource>
             {
                new ApiResource("gateway_api","user service"),
-               new ApiResource("contact_api","contact service")
+               new ApiResource("contact_api","contact service"),
+               new ApiResource("user_api","user service")
             };
         }
         //public static List<TestUser> GetTestUsers()

@@ -88,7 +88,8 @@ namespace User.API.Controllers
                 _userContext.Users.Add(user);
                 await _userContext.SaveChangesAsync();
             }
-            return Ok(new {
+            return Ok(new
+            {
                 user.Id,
                 user.Name,
                 user.Company,
@@ -125,8 +126,7 @@ namespace User.API.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("tags")]
-        public async Task<IActionResult> UpdateUserTage([FromBody]List<string> tages
-            )
+        public async Task<IActionResult> UpdateUserTage([FromBody]List<string> tages)
         {
             var originTags = await _userContext.UserTags.Where(u => u.UserId.ToString() == UserIdentity.UserId).ToListAsync();
             var newTags = tages.Except(originTags.Select(u => u.Tag));
@@ -138,6 +138,26 @@ namespace User.API.Controllers
             }));
             await _userContext.SaveChangesAsync();
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("baseinfo/{userId}")]
+        public async Task<IActionResult> GetBaseInfo(string userId)
+        {
+            // TBD 检查用户是否好友关系
+            var user = await _userContext.Users.SingleOrDefaultAsync(u => u.Id.ToString() == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(new
+            {
+                user.Id,
+                user.Name,
+                user.Company,
+                user.Title,
+                user.Avatar
+            });
         }
     }
 }

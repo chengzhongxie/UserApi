@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Consul;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -48,7 +50,14 @@ namespace User.API
                     cfg.Address = new Uri(serviceConfiguration.Consul.HttpEndpoint);
                 }
             }));
-
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.Audience = "user_api";
+                    options.Authority = "http://localhost";
+                });
             services.AddMvc(option =>
             {
                 option.Filters.Add(typeof(GlobalExceptionFilter));
@@ -75,6 +84,7 @@ namespace User.API
                     DeRegisterService(app, serviceOptions, consul);
                 });
             }
+            app.UseAuthentication();
             app.UseMvc();
             UserContextSeed.SeedAsync(app, loggerFactory).Wait();
         }
