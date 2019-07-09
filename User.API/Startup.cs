@@ -56,7 +56,7 @@ namespace User.API
                 {
                     options.RequireHttpsMetadata = false;
                     options.Audience = "user_api";
-                    options.Authority = "http://localhost";
+                    options.Authority = "http://localhost:8080";
                 });
             services.AddMvc(option =>
             {

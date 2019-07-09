@@ -19,6 +19,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Resilience;
+using IdentityServer4;
+
 
 namespace Contact.API
 {
@@ -47,7 +49,7 @@ namespace Contact.API
                 {
                     options.RequireHttpsMetadata = false;
                     options.Audience = "contact_api";
-                    options.Authority = "http://localhost";
+                    options.Authority = "http://localhost:8080";// Ocelot ip地址
                     options.SaveToken = true;
                 });
 
@@ -57,7 +59,7 @@ namespace Contact.API
                 var serviceConfiguration = p.GetRequiredService<IOptions<ServiceDiscoveryOptions>>().Value;
                 return new LookupClient(serviceConfiguration.Consul.DnsEndpoint.ToIPEndPoint());
             });
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // 注册全局单例 ResilienceClientFactory
             services.AddSingleton(typeof(ResilienceClientFactory), sp =>
             {

@@ -102,7 +102,7 @@
       "UpstreamHttpMethod": [ "Put" ]
     },
     {
-      "DownstreamPathTemplate": "/api/contacts/apply-requests",
+      "DownstreamPathTemplate": "/api/contacts/apply-requests/{userId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -110,7 +110,7 @@
           "Port": 5002
         }
       ],
-      "UpstreamPathTemplate": "/contacts/apply-requests",
+      "UpstreamPathTemplate": "/contacts/apply-requests/{userId}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put" ]
     }
   ],

@@ -37,8 +37,8 @@ namespace User.Identity
                         "contact_api",
                         "user_api",
                         IdentityServerConstants.StandardScopes.OfflineAccess,
-                         IdentityServerConstants.StandardScopes.OpenId,
-                          IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
                     }
                 }
             };
