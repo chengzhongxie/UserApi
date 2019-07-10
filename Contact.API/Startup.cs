@@ -20,7 +20,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Resilience;
 using IdentityServer4;
-
+using Contact.API.IntegrationEvents.EventHandling;
 
 namespace Contact.API
 {
@@ -39,7 +39,7 @@ namespace Contact.API
             services.AddScoped<IContactApplyRequestRepository, MongoContactApplyRequestRepository>()
                 .AddScoped<IContactRepository, MongoContactRepository>()
                 .AddScoped<IUserService, UserService>()
-               // .AddScoped<userprofilechangedeventhandler>
+                .AddScoped<UserProfileChangedEventHandler>()
                .AddScoped<ContactContext>();
             services.Configure<AppSettings>(Configuration);
 
@@ -75,6 +75,22 @@ namespace Contact.API
             services.AddSingleton<IHttpClient>(sp =>
             {
                 return sp.GetRequiredService<ResilienceClientFactory>().GetResilienceHttpClient();
+            });
+
+            services.AddCap(options =>
+            {
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection"))
+                .UseRabbitMQ("localhost")
+                .UseDashboard()
+                .UseDiscovery(d =>
+                {
+                    d.DiscoveryServerHostName = "localhost";
+                    d.DiscoveryServerPort = 8500;
+                    d.CurrentNodeHostName = "localhost";
+                    d.CurrentNodePort = 5800;
+                    d.NodeId = "1";
+                    d.NodeName = "CAP No.1 Node";
+                });
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

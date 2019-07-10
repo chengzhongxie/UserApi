@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using User.API.Data;
 using User.API.Dtos;
 using User.API.Filters;
+using DotNetCore.CAP;
 
 namespace User.API
 {
@@ -50,6 +51,7 @@ namespace User.API
                     cfg.Address = new Uri(serviceConfiguration.Consul.HttpEndpoint);
                 }
             }));
+
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -58,9 +60,26 @@ namespace User.API
                     options.Audience = "user_api";
                     options.Authority = "http://localhost:8080";
                 });
-            services.AddMvc(option =>
+
+            services.AddCap(options =>
             {
-                option.Filters.Add(typeof(GlobalExceptionFilter));
+                options.UseEntityFramework<UserContext>()
+                .UseRabbitMQ("localhost")
+                .UseDashboard()
+                .UseDiscovery(d =>
+                {
+                    d.DiscoveryServerHostName = "localhost";
+                    d.DiscoveryServerPort = 8500;
+                    d.CurrentNodeHostName = "localhost";
+                    d.CurrentNodePort = 5800;
+                    d.NodeId = "1";
+                    d.NodeName = "CAP No.1 Node";
+                });
+            });
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(GlobalExceptionFilter));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

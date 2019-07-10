@@ -9,6 +9,7 @@ using User.API.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.JsonPatch;
 using System.Collections;
+using DotNetCore.CAP;
 
 namespace User.API.Controllers
 {
@@ -19,10 +20,28 @@ namespace User.API.Controllers
         private readonly UserContext _userContext;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(UserContext userContext, ILogger<UserController> logger)
+        private readonly ICapPublisher _capPublisher;
+
+        public UserController(UserContext userContext, ILogger<UserController> logger, ICapPublisher capPublisher)
         {
             _userContext = userContext;
             _logger = logger;
+            _capPublisher = capPublisher;
+        }
+
+        private void RaiseUserprofileChangedEvent(Models.AppUser user)
+        {
+            if (_userContext.Entry(user).Property(nameof(user.Name)).IsModified || _userContext.Entry(user).Property(nameof(user.Title)).IsModified || _userContext.Entry(user).Property(nameof(user.Avatar)).IsModified || _userContext.Entry(user).Property(nameof(user.Company)).IsModified)
+            {
+                _capPublisher.Publish("finbook.userapi.userprofilechanged", new Dtos.UserIdentity
+                {
+                    UserId = user.Id.ToString(),
+                    Name = user.Name,
+                    Title = user.Title,
+                    Company = user.Company,
+                    Avatar = user.Avatar
+                });
+            }
         }
 
         [Route("")]
@@ -66,8 +85,15 @@ namespace User.API.Controllers
             {
                 _userContext.UserProperties.Add(item);
             }
-            _userContext.Update(user);
-            _userContext.SaveChanges();
+            using (var transacgion = _userContext.Database.BeginTransaction())
+            {
+                // 发布用户属性变更的消息
+                RaiseUserprofileChangedEvent(user);
+                _userContext.Update(user);
+                _userContext.SaveChanges();                
+                transacgion.Commit();
+            }
+
             return Json(user);
         }
 
