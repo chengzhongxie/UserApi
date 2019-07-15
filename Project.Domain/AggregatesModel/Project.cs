@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using Project.Domain.Events;
 
 namespace Project.Domain.AggregatesModel
 {
@@ -10,7 +12,7 @@ namespace Project.Domain.AggregatesModel
         /// <summary>
         /// 用户Id
         /// </summary>
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// 项目logo
@@ -162,7 +164,7 @@ namespace Project.Domain.AggregatesModel
         /// </summary>
         public DateTime CreatedTime { get; set; }
 
-        public Project CloneProject(Project source = null)
+        private Project CloneProject(Project source = null)
         {
             if (source == null)
             {
@@ -219,7 +221,7 @@ namespace Project.Domain.AggregatesModel
         /// <param name="contributorId"></param>
         /// <param name="source"></param>
         /// <returns></returns>
-        public Project ContributorFork(int contributorId, Project source = null)
+        public Project ContributorFork(string contributorId, Project source = null)
         {
             if (source == null)
             {
@@ -231,6 +233,41 @@ namespace Project.Domain.AggregatesModel
             newProject.ReferenceId = source.ReferenceId == 0 ? source.Id : source.ReferenceId;
             newProject.UpdateTime = DateTime.Now;
             return newProject;
+        }
+
+        public Project()
+        {
+            Viewers = new List<ProjectViewer>();
+            Contributors = new List<ProjectContributor>();
+            AddDomainEvent(new ProjectCreateEvent { Project = this });
+        }
+
+        public void AddViewer(string userId, string userName, string avatar)
+        {
+            var viewer = new ProjectViewer
+            {
+                UserId = userId,
+                UserName = userName,
+                Avatar = avatar,
+                CreatedTime = DateTime.Now
+            };
+
+            if (!Viewers.Any(v => v.UserId == UserId))
+            {
+                Viewers.Add(viewer);
+                AddDomainEvent(new ProjectViewedEvent { Viewer = viewer });
+            }
+
+           
+        }
+
+        public void AddContributor(ProjectContributor contributor)
+        {
+            if (!Contributors.Any(v => v.UserId == UserId))
+            {
+                Contributors.Add(contributor);
+                AddDomainEvent(new ProjectJoinedEvent { Contributor = contributor });
+            }
         }
     }
 }

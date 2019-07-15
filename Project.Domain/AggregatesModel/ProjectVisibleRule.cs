@@ -7,7 +7,7 @@ namespace Project.Domain.AggregatesModel
 {
     public class ProjectVisibleRule : Entity
     {
-        public int ProjectId { get; set; }
+        public string ProjectId { get; set; }
 
         public bool Visible { get; set; }
 

@@ -11,7 +11,7 @@ namespace Project.Domain.AggregatesModel
     /// </summary>
     public interface IProjectRepository : IRepository<Project>
     {
-        Task<Project> GetAsync(int id);
+        Task<Project> GetAsync(string id);
 
         Task<Project> AddAsync(Project project);
 
