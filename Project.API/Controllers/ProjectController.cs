@@ -8,8 +8,24 @@ namespace Project.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectController : ControllerBase
+    public class ProjectController : BaseController
     {
-       
+        [HttpPost]
+        public Task<IActionResult> CreateProject()
+        {
+
+        }
+
+        [HttpPut]
+        public Task<IActionResult> ViewProject()
+        {
+
+        }
+
+        [HttpPut]
+        public Task<IActionResult> JoinProject()
+        {
+
+        }
     }
 }
